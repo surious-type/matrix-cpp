@@ -1,5 +1,4 @@
 #include <iostream>
-#define N 3
 
 // Пример реализации присваивания элементу матрицы NxN, N>0
 
@@ -11,49 +10,41 @@ class Matrix {
   double **m;
 
 public:
-  Matrix() {
-    m = new int *[N];
-    for (int i = 1; i <= N; i++) {
-      m[i - 1] = new int[N];
-      for (int j = 1; j <= N; j++)
-        m[i - 1][j - 1] = i + j;
+  Matrix(int r, int c) : rows(r), cols(c) {
+    m = new double *[r];
+    for (int i = 0; i < rows; i++) {
+      m[i] = new double[c];
+      for (int j = 0; j < cols; j++)
+        m[i][j] = 0;
     }
   }
 
   ~Matrix() {
-    for (int i = 1; i <= N; i++) {
-      delete[] m[i - 1];
+    if (!m)
+      return;
+    for (int i = 0; i < rows; i++) {
+      delete[] m[i];
     }
     delete[] m;
   }
 
   class Row {
     int cols;
-    int *&r;
+    double *&r;
 
   public:
-    Row(int row, int cols, int **p) : r(p[row - 1]) { this->cols = cols; }
-    double &operator[](int j) { return r[j - 1]; }
+    Row(int row, int cols, double **p) : r(p[row]) { this->cols = cols; }
+    double &operator[](int j) { return r[j]; }
   };
 
   Row operator[](int i) { return Row(i, cols, m); }
 
-  friend ostream &operator<<(ostream &s, matrix &M) {
-    for (int i = 1; i <= N; i++) {
-      for (int j = 1; j <= N; j++)
-        cout << M.m[i - 1][j - 1] << " ";
+  friend ostream &operator<<(ostream &s, const Matrix &M) {
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j < cols; j++)
+        cout << M.m[i][j] << " ";
       cout << endl;
     }
     return s;
   }
 };
-
-int main() {
-  Matrix M;
-
-  cout << M;
-  M[1][1] = 0;
-  cout << endl;
-  cout << M;
-  return 0;
-}
