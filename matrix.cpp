@@ -1,50 +1,43 @@
+#include "matrix.h"
 #include <iostream>
-
-// Пример реализации присваивания элементу матрицы NxN, N>0
 
 using namespace std;
 
-class Matrix {
-  int rows;
-  int cols;
-  double **m;
+Matrix::Matrix() : rows(0), cols(0), m(nullptr) {}
 
-public:
-  Matrix(int r, int c) : rows(r), cols(c) {
-    m = new double *[r];
-    for (int i = 0; i < rows; i++) {
-      m[i] = new double[c];
-      for (int j = 0; j < cols; j++)
-        m[i][j] = 0;
-    }
+Matrix::Matrix(int r, int c) : rows(r), cols(c) {
+  m = new double *[r];
+  for (int i = 0; i < rows; i++) {
+    m[i] = new double[c];
+    for (int j = 0; j < cols; j++)
+      m[i][j] = 0;
   }
+}
 
-  ~Matrix() {
-    if (!m)
-      return;
-    for (int i = 0; i < rows; i++) {
-      delete[] m[i];
-    }
-    delete[] m;
+Matrix::~Matrix() {
+  if (!m)
+    return;
+  for (int i = 0; i < rows; i++) {
+    delete[] m[i];
   }
+  delete[] m;
+}
 
-  class Row {
-    int cols;
-    double *&r;
+Matrix::Row::Row(int row, int cols, double **p) : cols(cols), r(p[row]) {}
 
-  public:
-    Row(int row, int cols, double **p) : r(p[row]) { this->cols = cols; }
-    double &operator[](int j) { return r[j]; }
-  };
+double &Matrix::Row::operator[](int j) { return r[j]; }
 
-  Row operator[](int i) { return Row(i, cols, m); }
+const double &Matrix::Row::operator[](int j) const { return r[j]; }
 
-  friend ostream &operator<<(ostream &s, const Matrix &M) {
-    for (int i = 0; i < rows; i++) {
-      for (int j = 0; j < cols; j++)
-        cout << M.m[i][j] << " ";
-      cout << endl;
-    }
-    return s;
+Matrix::Row Matrix::operator[](int i) { return Row(i, cols, m); }
+
+const Matrix::Row Matrix::operator[](int i) const { return Row(i, cols, m); }
+
+ostream &operator<<(ostream &s, const Matrix &M) {
+  for (int i = 0; i < M.rows; i++) {
+    for (int j = 0; j < M.cols; j++)
+      s << M.m[i][j] << " ";
+    s << endl;
   }
-};
+  return s;
+}

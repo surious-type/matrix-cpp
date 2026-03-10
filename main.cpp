@@ -4,10 +4,10 @@
 using namespace std;
 
 int main() {
-  Matrix M;
+  Matrix M(3, 4);
 
   cout << M;
-  M[1][1] = 0;
+  M[1][1] = 2;
   cout << endl;
   cout << M;
   return 0;
