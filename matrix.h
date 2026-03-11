@@ -7,6 +7,14 @@ class Matrix {
   double **m;
 
 public:
+  class Exception {
+    const char *msg;
+
+  public:
+    Exception(const chat *msg);
+    const char *what() const;
+  };
+
   class Row {
     int cols;
     double *&r;
@@ -18,13 +26,22 @@ public:
   };
 
   Matrix();
-  Matrix(int r, int c);               // constructor
-  ~Matrix();                          // destructor
-  Matrix(const Matrix &m);            // constructor copy
-  Matrix &operator=(const Matrix &m); // operator =
+  Matrix(int r, int c);                   // constructor
+  ~Matrix();                              // destructor
+  Matrix(double size);                    // 1 x 1
+  Matrix(double *vals, int m);            // 1 x m - matrix row
+  Matrix(int n, double *);                // n x 1 - matrix col
+  Matrix(const char *);                   // matrix from chars
+  Matrix(const Matrix &other);            // constructor copy
+  Matrix &operator=(const Matrix &other); // operator =
 
   Row operator[](int i);
   const Row operator[](int i) const;
 
   friend std::ostream &operator<<(std::ostream &s, const Matrix &M);
+
+  static Matrix identity(int n);               // единичная матрица
+  static Matrix diagonal(double *vals, int n); // diagonal matrix
+  Matrix operator*(double k) const;
+  Matrix &operator*=(double k);
 };
